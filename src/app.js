@@ -5,6 +5,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const errorMiddleware = require('./middleware/error');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,9 @@ app.get('/', (req, res) => {
     message: 'API Task Management siap digunakan'
   });
 });
+
+// menerapkan routing aplikasi 
+app.use('/api/auth', authRoutes);
 
 // menerapkan penanganan error terpusat
 app.use(errorMiddleware);
