@@ -9,7 +9,7 @@ const { registerSchema, loginSchema } = require('../validators/authValidation');
 // route publik
 router.post('/register', validate(registerSchema), authController.register);
 router.post('/login', validate(loginSchema), authController.login);
-
+router.post('/refresh', authController.refreshToken);
 // route privat (butuh login)
 router.get('/me', authenticate, authController.getMe); // pasang authenticate
 

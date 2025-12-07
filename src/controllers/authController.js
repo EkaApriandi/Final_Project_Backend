@@ -1,6 +1,7 @@
 const prisma = require('../config/database');
 const { hashPassword, comparePassword } = require('../utils/password');
 const { generateAccessToken, generateRefreshToken } = require('../utils/token');
+const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/token');
 
 const register = async (req, res, next) => {
   try {
@@ -106,8 +107,53 @@ const getMe = async (req, res, next) => {
   }
 };
 
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      const error = new Error('Refresh token wajib dikirim');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // memverifikasi validitas refresh token
+    const decoded = verifyRefreshToken(refreshToken);
+    if (!decoded) {
+      const error = new Error('Refresh token tidak valid atau kedaluwarsa');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    // mengecek apakah user masih terdaftar
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id }
+    });
+
+    if (!user) {
+      const error = new Error('User tidak ditemukan');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // membuat access token baru
+    const newAccessToken = generateAccessToken(user);
+
+    res.status(200).json({
+      success: true,
+      message: 'Access token berhasil diperbarui',
+      data: {
+        accessToken: newAccessToken
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  refreshToken
 };

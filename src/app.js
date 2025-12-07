@@ -6,6 +6,10 @@ require('dotenv').config();
 
 const errorMiddleware = require('./middleware/error');
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const tagRoutes = require('./routes/tagRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +31,9 @@ app.get('/', (req, res) => {
 
 // menerapkan routing aplikasi 
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/tags', tagRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // menerapkan penanganan error terpusat
 app.use(errorMiddleware);
