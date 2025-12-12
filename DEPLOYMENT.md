@@ -3,9 +3,9 @@
 Dokumen ini berisi detail dan langkah-langkah deployment aplikasi ke AWS EC2.
 
 ## 1. Informasi Production
-- **Public URL:** `http://[MASUKKAN_IP_PUBLIC_AWS_DISINI]`
-- **Health Check:** `http://[MASUKKAN_IP_PUBLIC_AWS_DISINI]/`
-- **Instance ID:** `[MASUKKAN_INSTANCE_ID]`
+- **Public URL:** `http://18.211.61.53`
+- **Health Check:** `http://18.211.61.53/api`
+- **Instance ID:** `i-0c421825abe5b71bb`
 - **Region:** `us-east-1`
 - **OS:** Ubuntu Server 22.04 LTS
 - **Instance Type:** t2.micro
@@ -31,8 +31,8 @@ B. Setup Aplikasi
 Bash
 
 # Clone Repository dari GitHub
-git clone [MASUKKAN_LINK_GITHUB_KAMU_DISINI]
-cd final-project-backend
+git clone https://github.com/EkaApriandi/Final_Project_Backend
+cd backend-app
 
 # Install Dependencies
 npm install
@@ -51,7 +51,7 @@ C. Menjalankan Aplikasi (PM2)
 Bash
 
 # Menjalankan aplikasi di background
-pm2 start src/app.js --name "task-api"
+pm2 start src/app.js --name "backend-api"
 
 # Memastikan aplikasi jalan otomatis saat server restart
 pm2 startup
