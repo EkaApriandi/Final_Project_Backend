@@ -1,11 +1,12 @@
 const prisma = require('../config/database');
 
+// membuat kategori baru untuk user
 const createCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
     const userId = req.user.id;
 
-    // memeriksa apakah kategori dengan nama sama sudah ada untuk user ini
+    // mengecek apakah nama kategori sudah ada
     const existingCategory = await prisma.category.findFirst({
       where: { name, userId }
     });
@@ -30,11 +31,12 @@ const createCategory = async (req, res, next) => {
   }
 };
 
+// menampilkan seluruh kategori milik user
 const getCategories = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    // mengambil semua kategori milik user
+    // mengambil data kategori dari database
     const categories = await prisma.category.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' }
@@ -50,12 +52,13 @@ const getCategories = async (req, res, next) => {
   }
 };
 
+// mencari detail kategori spesifik berdasarkan id
 const getCategoryById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
 
-    // mencari kategori spesifik dan memvalidasi kepemilikan
+    // memvalidasi id dan kepemilikan kategori
     const category = await prisma.category.findFirst({
       where: {
         id: parseInt(id),
@@ -78,13 +81,14 @@ const getCategoryById = async (req, res, next) => {
   }
 };
 
+// memperbarui nama kategori
 const updateCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
     const userId = req.user.id;
 
-    // memastikan kategori ada sebelum update
+    // mengecek keberadaan kategori sebelum diedit
     const existingCategory = await prisma.category.findFirst({
       where: { id: parseInt(id), userId }
     });
@@ -110,12 +114,13 @@ const updateCategory = async (req, res, next) => {
   }
 };
 
+// menghapus kategori dari database
 const deleteCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
 
-    // memastikan kategori ada sebelum dihapus
+    // memastikan data kategori tersedia untuk dihapus
     const existingCategory = await prisma.category.findFirst({
       where: { id: parseInt(id), userId }
     });

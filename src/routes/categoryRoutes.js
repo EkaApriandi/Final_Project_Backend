@@ -6,10 +6,10 @@ const authenticate = require('../middleware/auth');
 const validate = require('../middleware/validate');
 const { createCategorySchema, updateCategorySchema } = require('../validators/categoryValidation');
 
-// menerapkan middleware auth untuk semua endpoint kategori
+// menerapkan keamanan autentikasi pada seluruh endpoint
 router.use(authenticate);
 
-// definisi endpoint kategori
+// mengatur rute untuk pengelolaan data kategori
 router.post('/', validate(createCategorySchema), categoryController.createCategory);
 router.get('/', categoryController.getCategories);
 router.get('/:id', categoryController.getCategoryById);

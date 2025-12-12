@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// membuat access token (durasi pendek)
+// menghasilkan access token untuk autentikasi sementara
 const generateAccessToken = (user) => {
   const payload = {
     id: user.id,
@@ -13,7 +13,7 @@ const generateAccessToken = (user) => {
   });
 };
 
-// membuat refresh token (durasi panjang)
+// menghasilkan refresh token untuk pembaruan sesi
 const generateRefreshToken = (user) => {
   const payload = {
     id: user.id
@@ -24,7 +24,17 @@ const generateRefreshToken = (user) => {
   });
 };
 
+// memverifikasi validitas refresh token
+const verifyRefreshToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (error) {
+    return null;
+  }
+};
+
 module.exports = {
   generateAccessToken,
-  generateRefreshToken
+  generateRefreshToken,
+  verifyRefreshToken
 };

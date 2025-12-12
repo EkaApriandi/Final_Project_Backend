@@ -6,130 +6,121 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('memulai proses seeding database...');
 
-  // membersihkan data lama
+  // Menghapus data lama agar tidak duplikat
+  await prisma.taskFile.deleteMany();
   await prisma.task.deleteMany();
   await prisma.category.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.user.deleteMany();
 
-  // hash password default
+  // Menyiapkan password default yang sudah di-hash
   const passwordHash = await bcrypt.hash('password123', 10);
 
-  // membuat akun admin 
+  // Mendaftarkan akun admin
   await prisma.user.create({
-    data: {
-      name: 'Safana',
-      email: 'safana@gmail.com',
-      password: passwordHash,
-      role: 'ADMIN'
-    }
+    data: { name: 'Safana', email: 'safana@gmail.com', password: passwordHash, role: 'ADMIN' }
   });
 
-  // membuat akun user utama
+  // Mendaftarkan akun user reguler
   const userEka = await prisma.user.create({
-    data: {
-      name: 'Eka',
-      email: 'eka@gmail.com',
-      password: passwordHash,
-      role: 'USER'
-    }
+    data: { name: 'Eka', email: 'eka@gmail.com', password: passwordHash, role: 'USER' }
   });
 
-  // membuat akun user tambahan 
-  await prisma.user.create({
-    data: {
-      name: 'Apriandi',
-      email: 'apriandi@gmail.com',
-      password: passwordHash,
-      role: 'USER'
-    }
+  const userApriandi = await prisma.user.create({
+    data: { name: 'Apriandi', email: 'apriandi@gmail.com', password: passwordHash, role: 'USER' }
   });
 
-  // membuat kategori milik Eka
-  const catKuliah = await prisma.category.create({ data: { name: 'Tugas Kuliah', userId: userEka.id } });
-  const catOrganisasi = await prisma.category.create({ data: { name: 'Organisasi', userId: userEka.id } });
-  const catPribadi = await prisma.category.create({ data: { name: 'Pribadi', userId: userEka.id } });
+  const userBudi = await prisma.user.create({
+    data: { name: 'Budi Santoso', email: 'budi@gmail.com', password: passwordHash, role: 'USER' }
+  });
 
-  // 5. membuat tag global
+  // Menambahkan kategori untuk setiap user
+  const catEka1 = await prisma.category.create({ data: { name: 'Tugas Kuliah', userId: userEka.id } });
+  const catEka2 = await prisma.category.create({ data: { name: 'Organisasi', userId: userEka.id } });
+  
+  const catApriandi1 = await prisma.category.create({ data: { name: 'Pekerjaan', userId: userApriandi.id } });
+  const catBudi1 = await prisma.category.create({ data: { name: 'Hobi', userId: userBudi.id } });
+
+  // Membuat tag global
   const tagUrgent = await prisma.tag.create({ data: { name: 'Urgent' } });
   const tagWaiting = await prisma.tag.create({ data: { name: 'Waiting List' } });
   const tagDone = await prisma.tag.create({ data: { name: 'Done' } });
+  const tagMeeting = await prisma.tag.create({ data: { name: 'Meeting' } });
 
-  // membuat daftar tugas/task (Relasi ke Kategori & Tag)
-  
-  // Tugas 1
+  // Mengisi tugas simulasi untuk Eka
   await prisma.task.create({
     data: {
-      title: 'Sistem Manajemen Ecommerce & Inventaris',
-      description: 'Membuat aplikasi berbasis web',
+      title: 'Sistem Manajemen Ecommerce',
+      description: 'Membuat aplikasi berbasis web dengan Vue dan Express',
       status: 'COMPLETED',
       userId: userEka.id,
-      categoryId: catKuliah.id,
+      categoryId: catEka1.id,
+      dueDate: new Date('2024-01-15'),
       tags: { connect: [{ id: tagDone.id }] }
     }
   });
 
-  // Tugas 2
   await prisma.task.create({
     data: {
       title: 'Final Project Backend',
-      description: 'Tugas mata kuliah Pemrograman Web',
+      description: 'Deployment ke AWS EC2',
       status: 'IN_PROGRESS',
       userId: userEka.id,
-      categoryId: catKuliah.id,
+      categoryId: catEka1.id,
+      dueDate: new Date('2024-12-31'),
       tags: { connect: [{ id: tagUrgent.id }] }
     }
   });
 
-  // Tugas 3
   await prisma.task.create({
     data: {
-      title: 'Project Pemrograman Mobile',
-      description: 'Membuat aplikasi android sederhana',
-      status: 'IN_PROGRESS',
-      userId: userEka.id,
-      categoryId: catKuliah.id,
-      tags: { connect: [{ id: tagUrgent.id }] }
-    }
-  });
-
-  // Tugas 4
-  await prisma.task.create({
-    data: {
-      title: 'TK Big Data: Clustering',
-      description: 'Analisis data menggunakan algoritma clustering',
-      status: 'IN_PROGRESS',
-      userId: userEka.id,
-      categoryId: catKuliah.id,
-      tags: { connect: [{ id: tagUrgent.id }] }
-    }
-  });
-
-  // Tugas 5
-  await prisma.task.create({
-    data: {
-      title: 'Latihan Badminton',
-      description: 'Olahraga rutin mingguan',
+      title: 'Rapat Kerja Himpunan',
+      description: 'Pemaparan Program Kerja',
       status: 'PENDING',
       userId: userEka.id,
-      categoryId: catPribadi.id,
+      categoryId: catEka2.id,
+      dueDate: new Date('2025-02-20'),
+      tags: { connect: [{ id: tagWaiting.id }, { id: tagMeeting.id }] }
+    }
+  });
+
+  // Mengisi tugas simulasi untuk Apriandi
+  await prisma.task.create({
+    data: {
+      title: 'Laporan Bulanan',
+      description: 'Rekapitulasi keuangan bulan November',
+      status: 'IN_PROGRESS',
+      userId: userApriandi.id,
+      categoryId: catApriandi1.id,
+      dueDate: new Date('2024-12-05'),
+      tags: { connect: [{ id: tagUrgent.id }] }
+    }
+  });
+
+  await prisma.task.create({
+    data: {
+      title: 'Meeting Klien',
+      description: 'Presentasi produk baru',
+      status: 'PENDING',
+      userId: userApriandi.id,
+      categoryId: catApriandi1.id,
+      tags: { connect: [{ id: tagMeeting.id }] }
+    }
+  });
+
+  // Mengisi tugas simulasi untuk Budi
+  await prisma.task.create({
+    data: {
+      title: 'Jogging Pagi',
+      description: 'Lari keliling komplek',
+      status: 'PENDING',
+      userId: userBudi.id,
+      categoryId: catBudi1.id,
       tags: { connect: [{ id: tagWaiting.id }] }
     }
   });
 
-  // Tugas 6
-  await prisma.task.create({
-    data: {
-      title: 'Rapat Kerja',
-      description: 'Pemaparan Program Kerja selama satu periode',
-      status: 'PENDING',
-      userId: userEka.id,
-      categoryId: catOrganisasi.id,
-      tags: { connect: [{ id: tagWaiting.id }] }
-    }
-  });
-
-  console.log('seeding selesai, data eka siap digunakan');
+  console.log('Seeding selesai! Data siap digunakan.');
 }
 
 main()

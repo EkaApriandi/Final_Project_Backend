@@ -37,6 +37,7 @@ model Task {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
+  files       TaskFile[]
   status      String    @default("PENDING")
   dueDate     DateTime?
   userId      Int
@@ -58,4 +59,12 @@ model Tag {
   updatedAt DateTime @updatedAt
 
   tasks Task[]
+}
+
+model TaskFile {
+  id        Int      @id @default(autoincrement())
+  fileUrl   String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    Int
+  createdAt DateTime @default(now())
 }

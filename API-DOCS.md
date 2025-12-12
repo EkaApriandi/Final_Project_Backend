@@ -1,6 +1,6 @@
 # Dokumentasi API Task Management
 
-**Base URL:** `http://localhost:3000/api` (Development)
+**Base URL:** `http://[IP_PUBLIC_AWS]:3000/api` (Production) atau `http://localhost:3000/api` (Local)
 **Auth:** Bearer Token (JWT)
 
 ## 1. Autentikasi
@@ -16,67 +16,47 @@ Mendaftarkan pengguna baru.
   "email": "eka@gmail.com",
   "password": "password123"
 }
-````
+Login
+POST /auth/login Masuk dan mendapatkan Access Token & Refresh Token.
 
-### Login
+Body:
 
-`POST /auth/login`
-Masuk dan mendapatkan Access Token & Refresh Token.
+JSON
 
-**Body:**
-
-```json
 {
   "email": "eka@gmail.com",
   "password": "password123"
 }
-```
+Get Profile (Me)
+GET /auth/me Headers: Authorization: Bearer <token> Mengambil data profil user yang sedang login.
 
-### Refresh Token
+2. Tasks (Tugas)
+Get All Tasks
+GET /tasks Headers: Authorization: Bearer <token> Mengambil daftar tugas dengan filter dan pagination.
 
-`POST /auth/refresh`
-Memperbarui Access Token yang kadaluwarsa.
+Query Parameters:
 
-**Body:**
+page: Nomor halaman (default: 1)
 
-```json
-{
-  "refreshToken": "eyJhbGciOiJIUz..."
-}
-```
+limit: Data per halaman (default: 10)
 
-### Get Profile (Me)
+search: Cari judul/deskripsi
 
-`GET /auth/me`
-**Headers:** `Authorization: Bearer <token>`
-Mengambil data profil user yang sedang login.
+categoryId: Filter berdasarkan ID kategori
 
------
+status: Filter status (PENDING, IN_PROGRESS, COMPLETED)
 
-## 2\. Tasks (Tugas)
+sortBy: Field untuk urutan (createdAt, dueDate)
 
-### Get All Tasks
+order: asc atau desc
 
-`GET /tasks`
-**Headers:** `Authorization: Bearer <token>`
-Mengambil daftar tugas dengan filter dan pagination.
+Create Task
+POST /tasks Headers: Authorization: Bearer <token>
 
-**Query Parameters:**
+Body:
 
-  - `page`: Nomor halaman (default: 1)
-  - `limit`: Data per halaman (default: 10)
-  - `search`: Cari judul/deskripsi
-  - `categoryId`: Filter berdasarkan ID kategori
-  - `status`: Filter status (PENDING, IN\_PROGRESS, COMPLETED)
+JSON
 
-### Create Task
-
-`POST /tasks`
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-
-```json
 {
   "title": "Final Project Backend",
   "description": "Tugas wajib mata kuliah",
@@ -84,72 +64,40 @@ Mengambil daftar tugas dengan filter dan pagination.
   "categoryId": 1,
   "tags": ["Urgent", "Kuliah"]
 }
-```
+Update Task
+PUT /tasks/:id Headers: Authorization: Bearer <token>
 
-### Update Task
+Body:
 
-`PUT /tasks/:id`
-**Headers:** `Authorization: Bearer <token>`
+JSON
 
-**Body:**
-
-```json
 {
   "status": "COMPLETED"
 }
-```
+Delete Task
+DELETE /tasks/:id Headers: Authorization: Bearer <token> Menghapus tugas.
 
-### Delete Task
+3. Categories & Tags
+Create Category
+POST /categories Headers: Authorization: Bearer <token>
 
-`DELETE /tasks/:id`
-**Headers:** `Authorization: Bearer <token>`
-Menghapus tugas (Admin bisa menghapus punya siapa saja).
+Body:
 
------
+JSON
 
-## 3\. Categories & Tags
-
-### Create Category
-
-`POST /categories`
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-
-```json
 {
   "name": "Organisasi"
 }
-```
+Get Categories
+GET /categories Headers: Authorization: Bearer <token>
 
-### Get Categories
+Create Tag
+POST /tags Headers: Authorization: Bearer <token>
 
-`GET /categories`
-**Headers:** `Authorization: Bearer <token>`
+Body:
 
-### Create Tag
+JSON
 
-`POST /tags`
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-
-```json
 {
   "name": "Urgent"
 }
-```
-
-````
-
----
-
-### 2. Perintah Terminal
-Setelah file disimpan, jalankan ini di terminal untuk upload ke GitHub.
-
-```powershell
-git add .
-git commit -m "menambahkan dokumentasi api lengkap"
-git push
-````
-

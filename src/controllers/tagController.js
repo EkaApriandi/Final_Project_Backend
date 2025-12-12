@@ -1,10 +1,11 @@
 const prisma = require('../config/database');
 
+// membuat tag baru dalam sistem
 const createTag = async (req, res, next) => {
   try {
     const { name } = req.body;
 
-    // mengecek apakah tag sudah ada di database
+    // mengecek apakah nama tag sudah terdaftar
     const existingTag = await prisma.tag.findUnique({
       where: { name }
     });
@@ -15,7 +16,7 @@ const createTag = async (req, res, next) => {
       throw error;
     }
 
-    // menyimpan tag baru
+    // menyimpan data tag baru ke database
     const tag = await prisma.tag.create({
       data: { name }
     });
@@ -30,9 +31,10 @@ const createTag = async (req, res, next) => {
   }
 };
 
+// menampilkan seluruh daftar tag yang tersedia
 const getTags = async (req, res, next) => {
   try {
-    // mengambil seluruh data tag
+    // mengambil seluruh data tag secara urut
     const tags = await prisma.tag.findMany({
       orderBy: { name: 'asc' }
     });
@@ -47,11 +49,12 @@ const getTags = async (req, res, next) => {
   }
 };
 
+// menghapus tag spesifik dari sistem
 const deleteTag = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // memastikan tag ada sebelum dihapus
+    // memastikan keberadaan tag sebelum dihapus
     const existingTag = await prisma.tag.findUnique({
       where: { id: parseInt(id) }
     });
@@ -62,7 +65,7 @@ const deleteTag = async (req, res, next) => {
       throw error;
     }
 
-    // menghapus tag dari database
+    // menghapus data tag dari database
     await prisma.tag.delete({
       where: { id: parseInt(id) }
     });

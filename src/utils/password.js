@@ -2,12 +2,12 @@ const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = 10;
 
-// mengubah password teks biasa menjadi hash
+// mengubah password menjadi format hash terenkripsi
 const hashPassword = async (password) => {
   return await bcrypt.hash(password, SALT_ROUNDS);
 };
 
-// membandingkan password input dengan hash database
+// membandingkan kecocokan password input dengan hash tersimpan
 const comparePassword = async (password, hashedPassword) => {
   return await bcrypt.compare(password, hashedPassword);
 };

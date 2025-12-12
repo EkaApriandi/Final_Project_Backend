@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-// validasi pembuatan task
+// memvalidasi input saat membuat tugas baru
 const createTaskSchema = Joi.object({
   title: Joi.string().min(3).max(100).required().messages({
     'any.required': 'Judul tugas wajib diisi'
@@ -10,10 +10,10 @@ const createTaskSchema = Joi.object({
     'date.format': 'Format tanggal harus ISO (YYYY-MM-DD)'
   }),
   categoryId: Joi.number().integer().optional(),
-  tags: Joi.array().items(Joi.string()).optional() // array nama tag ["Urgent", "Bug"]
+  tags: Joi.array().items(Joi.string()).optional() // menerima array string nama tag
 });
 
-// validasi update task
+// memvalidasi input saat memperbarui data tugas
 const updateTaskSchema = Joi.object({
   title: Joi.string().min(3).max(100),
   description: Joi.string().allow('', null),

@@ -6,10 +6,10 @@ const authenticate = require('../middleware/auth');
 const validate = require('../middleware/validate');
 const { createTagSchema } = require('../validators/tagValidation');
 
-// menerapkan middleware auth
+// menerapkan keamanan autentikasi pada seluruh endpoint
 router.use(authenticate);
 
-// definisi endpoint tag
+// mengatur rute untuk pengelolaan data tag
 router.post('/', validate(createTagSchema), tagController.createTag);
 router.get('/', tagController.getTags);
 router.delete('/:id', tagController.deleteTag);
